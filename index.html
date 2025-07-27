@@ -57,6 +57,7 @@ font-weight: bold;
 </style>
 </head>
 <body>
+
 <form id="myForm">
 <h2>فرم ثبت‌نام</h2>
 
@@ -89,33 +90,24 @@ method: "POST",
 headers: {
 "Content-Type": "text/plain;charset=utf-8"
 },
-redirect: "follow",
 body: JSON.stringify({ fullname, email, phone })
 })
-.then(res => res.text())
-.then(text => {
-let data;
-try {
-data = JSON.parse(text);
-} catch {
-data = { status: "error", message: "پاسخ قابل‌تجزیه نبود." };
-}
-
-if (data.status === "success") {
+.then(res => {
+if (res.ok) {
 message.textContent = "اطلاعات با موفقیت ارسال شد.";
 message.style.color = "green";
 form.reset();
 } else {
-message.textContent = "خطا در ارسال اطلاعات: " + (data.message || "");
-message.style.color = "red";
+throw new Error("خطا در ارسال اطلاعات");
 }
 })
 .catch(err => {
-console.error(err);
+console.error("خطا:", err);
 message.textContent = "ارسال اطلاعات با خطا مواجه شد!";
 message.style.color = "red";
 });
 });
 </script>
+
 </body>
 </html>
