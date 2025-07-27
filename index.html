@@ -12,6 +12,7 @@ font-family: 'Vazirmatn', sans-serif;
 font-size: 16px;
 padding: 20px;
 background-color: #f2f2f2;
+direction: rtl;
 }
 
 form {
@@ -91,14 +92,21 @@ headers: {
 redirect: "follow",
 body: JSON.stringify({ fullname, email, phone })
 })
-.then(res => res.json())
-.then(data => {
+.then(res => res.text())
+.then(text => {
+let data;
+try {
+data = JSON.parse(text);
+} catch {
+data = { status: "error", message: "پاسخ قابل‌تجزیه نبود." };
+}
+
 if (data.status === "success") {
 message.textContent = "اطلاعات با موفقیت ارسال شد.";
 message.style.color = "green";
 form.reset();
 } else {
-message.textContent = "خطا در ارسال اطلاعات: " + data.message;
+message.textContent = "خطا در ارسال اطلاعات: " + (data.message || "");
 message.style.color = "red";
 }
 })
